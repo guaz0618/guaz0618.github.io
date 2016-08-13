@@ -1,4 +1,4 @@
-function initPage(){
+ï»¿function initPage(){
   
   $("input[name='rarity']").bind("change" , function(){
     var rareValue = "";
@@ -47,11 +47,11 @@ function filterRun(){
 }
 
 var itemName = {
-    'water': '¯Â¤ô',
-    'food': '­¹§÷',
-    'stone': '¥Û§÷',
-    'wood': '¤ì§÷',
-    'iron': 'ÅK¶ô'
+    'water': 'ç´”æ°´',
+    'food': 'é£Ÿæ',
+    'stone': 'çŸ³æ',
+    'wood': 'æœ¨æ',
+    'iron': 'éµå¡Š'
 };
 
 function putResult(servant){
@@ -71,7 +71,7 @@ function resultSetup(){
     if ($(this).prop("checked") == true){
 
       if ($(".party").length > 4 ){
-        alert("²Õ¶¤³Ì¤j¤­¤H");
+        alert("çµ„éšŠæœ€å¤§äº”äºº");
         $(this).prop("checked", false);
         return false;
       }
