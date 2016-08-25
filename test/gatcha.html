@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+</head>
+<body ng-app="myApp">
+    <div ng-controller="RndCtrl">
+        命中率:<input type="text" ng-model="prop.rate" />% &nbsp;
+        頻率:每<input type="number" min="1" ng-model="prop.period" ng-change="action.period_changed()" />秒
+            <input type="number" min="1" max="1000000" ng-model="prop.freq" />抽
+        <input type="button" value="start" ng-hide="process" ng-click="action.start()" />
+        <input type="button" value="stop" ng-show="process" ng-click="action.stop()" />
+        <ul>
+            <li ng-repeat="r in records">
+                {{r.time | date:'HH:mm:ss'}}: 
+                {{r.rate}}% {{r.freq}}抽 => {{r.hit}} = {{100.0 * r.hit / r.freq}}%
+            </li>
+        </ul>
+    </div>    
+</body>
+</html>
+<script type="text/javascript">
+    
+    var myApp = angular.module('myApp', [])
+    .controller('RndCtrl', function ($scope, $interval) {
+        $scope.prop = {
+            rate: 7,
+            period: 1,
+            freq: 10000
+        };
+
+        $scope.process = false;
+
+        $scope.records = [];
+
+        var processObj;
+        $scope.action = {
+            start: function () {
+                $scope.process = true;
+                var period = $scope.prop.period;
+                processObj = $interval(function () {
+                    var rate = $scope.prop.rate;                    
+                    var freq = $scope.prop.freq;
+
+                    if (rate > 0 && rate <= 100) {
+                        var _rate = rate / 100.0;
+                        var hit = 0;
+                        for (var i = 0; i < freq ; i++) {
+                            hit += Math.random() <= _rate ? 1 : 0;
+                        }
+
+                        $scope.records.push({
+                            time: new Date(),
+                            rate: rate,
+                            period: period,
+                            freq: freq,
+                            hit: hit
+                        });
+
+                        if ($scope.records.length > 20) {
+                            $scope.records.shift();
+                        }
+                    }
+                }, period * 1000);
+            },
+            stop: function () {
+                $interval.cancel(processObj);
+                processObj = undefined;
+                $scope.process = false;
+            },
+            period_changed: function () {
+                if ($scope.process) {
+                    console.log('$scope.process', $scope.process);
+                    $scope.action.stop();
+                    $scope.action.start();
+                }
+            }
+        };
+    });
+   
+</script>
